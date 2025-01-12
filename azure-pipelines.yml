@@ -2,15 +2,11 @@ trigger:
   branches:
     include:
       - master  # branch que irei configurar como trigger na pipeline
-
-pool:
-  name: 'Ryzen-Neto-Local'  # VM que vai rodar o pipeline
-
 jobs:
   - job: build
     displayName: 'Build Docker Image on WSL'
     pool:
-      vmImage: 'ubuntu-latest'  # VM Ubuntu para executar o pipeline
+      name: 'Ryzen-Neto-Local'  # VM que vai rodar o pipeline
     steps:
       - script: |
           # Login no Docker Hub
