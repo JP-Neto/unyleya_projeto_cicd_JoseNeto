@@ -4,7 +4,7 @@ trigger:
       - master  # branch que irei configurar como trigger na pipeline
 
 pool:
-  vmImage: 'ubuntu-latest'  # vm que vai rodar o pipeline
+  name: 'Ryzen-Neto-Local'  # vm que vai rodar o pipeline
 
 steps:
 - task: Docker@2
