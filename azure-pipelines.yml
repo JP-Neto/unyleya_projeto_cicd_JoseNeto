@@ -1,24 +1,24 @@
 trigger:
   branches:
     include:
-      - master  # branch que irei configurar como trigger na pipeline
+      - master  # Branch que irei configurar como trigger na pipeline
 
 jobs:
   - job: build
-    displayName: 'Build Docker Image on WSL'
+    displayName: 'Build and Push Docker Image to Docker Hub'
     pool:
-      name: 'Ryzen-Neto-Local'  # VM local que vai rodar o pipeline
+      name: 'Ryzen-Neto-Local'  # Agente local que vai rodar o pipeline
     steps:
       - script: |
           # Certificar-se de que estamos no diretório correto
-          cd $(Build.SourcesDirectory)
+          wsl cd $(Build.SourcesDirectory)
 
-          # Login no Docker
-          echo $DOCKER_PASSWORD | wsl -- docker login -u $DOCKER_USERNAME --password-stdin
+          # Login no Docker Hub
+          echo $DOCKER_PASSWORD | wsl docker login -u $DOCKER_USERNAME --password-stdin
 
           # Build e Push da imagem usando buildx
-          wsl -- docker buildx build --platform linux/amd64 -f $(Build.SourcesDirectory)/Dockerfile -t jpneto90/unyleya_projeto_devops:latest --push .
+          wsl docker buildx build --platform linux/amd64 -f $(Build.SourcesDirectory)/Dockerfile -t jpneto90/unyleya_projeto_devops:latest --push .
         displayName: 'Build and Push Docker Image'
         env:
-          DOCKER_USERNAME: $(DOCKER_USERNAME)
-          DOCKER_PASSWORD: $(DOCKER_PASSWORD)
+          DOCKER_USERNAME: $(DOCKER_USERNAME)  # Variável de ambiente com o usuário do Docker Hub
+          DOCKER_PASSWORD: $(DOCKER_PASSWORD)  # Variável de ambiente com a senha do Docker Hub
