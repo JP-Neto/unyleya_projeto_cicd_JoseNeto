@@ -16,5 +16,5 @@ jobs:
           "C:\Program Files\Docker\Docker\resources\bin\docker.exe" buildx build --platform linux/amd64 -f $(Build.SourcesDirectory)\Dockerfile -t jpneto90/unyleya_projeto_devops:latest --push .
         displayName: 'Build and Push Docker Image'
         env:
-          DOCKER_USERNAME: $(DOCKER_USERNAME)  # Variável de ambiente com o usuário do Docker Hub
-          DOCKER_PASSWORD: $(DOCKER_PASSWORD)  # Variável de ambiente com a senha do Docker Hub
+          DOCKER_USERNAME: $(DOCKER_USERNAME)
+          DOCKER_PASSWORD: $(DOCKER_PASSWORD)
