@@ -1,7 +1,7 @@
 trigger:
   branches:
     include:
-      - master  # Branch que irei configurar como trigger na pipeline, sempre que ela for alterada a pipeline ira rodar
+      - master  # Branch que será usada como trigger na pipeline
 
 jobs:
   - job: build
@@ -10,14 +10,9 @@ jobs:
       name: 'Ryzen-Neto-Local'  # Agente local que vai rodar o pipeline
     steps:
       - script: |
-          # Certificar-se de que estamos no diretório correto
-          cd $(Build.SourcesDirectory)
-
-          # Login no Docker Hub
-          echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin
-
-          # Build e Push da imagem usando buildx
-          docker buildx build --platform linux/amd64 -f Dockerfile -t jpneto90/unyleya_projeto_devops:latest --push .
+          "C:\Program Files\Docker\Docker\resources\bin\docker.exe" version
+          echo %DOCKER_PASSWORD% | "C:\Program Files\Docker\Docker\resources\bin\docker.exe" login -u %DOCKER_USERNAME% --password-stdin
+          "C:\Program Files\Docker\Docker\resources\bin\docker.exe" buildx build --platform linux/amd64 -f $(Build.SourcesDirectory)\Dockerfile -t jpneto90/unyleya_projeto_devops:latest --push .
         displayName: 'Build and Push Docker Image'
         env:
           DOCKER_USERNAME: $(DOCKER_USERNAME)  # Variável de ambiente com o usuário do Docker Hub
