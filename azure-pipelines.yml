@@ -10,17 +10,14 @@ jobs:
       name: 'Ryzen-Neto-Local'  # Agente local que vai rodar o pipeline
     steps:
       - script: |
-          # Invocar WSL para executar todos os comandos
-          wsl bash -c "
           # Certificar-se de que estamos no diretório correto
-          cd \$(wslpath '$(Build.SourcesDirectory)')
+          cd $(Build.SourcesDirectory)
 
           # Login no Docker Hub
-          echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin
+          echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin
 
           # Build e Push da imagem usando buildx
           docker buildx build --platform linux/amd64 -f Dockerfile -t jpneto90/unyleya_projeto_devops:latest --push .
-          "
         displayName: 'Build and Push Docker Image'
         env:
           DOCKER_USERNAME: $(DOCKER_USERNAME)  # Variável de ambiente com o usuário do Docker Hub
