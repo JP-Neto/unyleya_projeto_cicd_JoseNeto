@@ -26,8 +26,8 @@ jobs:
             & "C:\Program Files\Docker\Docker\resources\bin\docker.exe" login -u ${env:DOCKER_USERNAME} -p ${env:DOCKER_PASSWORD}
             if ($LASTEXITCODE -ne 0) { exit 1 }
 
-            # Build e push da imagem Docker
-            & "C:\Program Files\Docker\Docker\resources\bin\docker.exe" buildx build --platform linux/amd64 -f $(Build.SourcesDirectory)\Dockerfile -t jpneto90/unyleya_projeto_devops:latest --push
+            # Build e push da imagem Docker com o caminho do contexto de build
+            & "C:\Program Files\Docker\Docker\resources\bin\docker.exe" buildx build --platform linux/amd64 -f $(Build.SourcesDirectory)\Dockerfile -t jpneto90/unyleya_projeto_devops:latest --push $(Build.SourcesDirectory)
         displayName: 'Build and Push Docker Image'
         env:
           DOCKER_USERNAME: $(DOCKER_USERNAME)
