@@ -1,7 +1,7 @@
 trigger:
   branches:
     include:
-      - master  # Branch que irei configurar como trigger na pipeline
+      - master  # Branch que irei configurar como trigger na pipeline, sempre que ela for alterada a pipeline ira rodar
 
 jobs:
   - job: build
