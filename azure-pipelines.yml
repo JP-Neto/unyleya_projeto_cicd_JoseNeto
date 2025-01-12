@@ -11,7 +11,7 @@ jobs:
     steps:
       - script: |
           "C:\Program Files\Docker\Docker\resources\bin\docker.exe" version
-          echo %DOCKER_PASSWORD% | "C:\Program Files\Docker\Docker\resources\bin\docker.exe" login -u %DOCKER_USERNAME% --password-stdin
+          echo.|set /p=%DOCKER_PASSWORD% | "C:\Program Files\Docker\Docker\resources\bin\docker.exe" login https://registry-1.docker.io/v2/ -u %DOCKER_USERNAME% --password-stdin
           if %ERRORLEVEL% NEQ 0 exit /b 1
           "C:\Program Files\Docker\Docker\resources\bin\docker.exe" buildx build --platform linux/amd64 -f $(Build.SourcesDirectory)\Dockerfile -t jpneto90/unyleya_projeto_devops:latest --push .
         displayName: 'Build and Push Docker Image'
