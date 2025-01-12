@@ -11,12 +11,8 @@ jobs:
     steps:
       - script: |
           "C:\Program Files\Docker\Docker\resources\bin\docker.exe" version
-
-          # Login no Docker Hub e verificação de erro
           echo %DOCKER_PASSWORD% | "C:\Program Files\Docker\Docker\resources\bin\docker.exe" login -u %DOCKER_USERNAME% --password-stdin
           if %ERRORLEVEL% NEQ 0 exit /b 1
-
-          # Build e push da imagem Docker
           "C:\Program Files\Docker\Docker\resources\bin\docker.exe" buildx build --platform linux/amd64 -f $(Build.SourcesDirectory)\Dockerfile -t jpneto90/unyleya_projeto_devops:latest --push .
         displayName: 'Build and Push Docker Image'
         env:
