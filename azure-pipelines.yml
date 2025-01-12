@@ -9,11 +9,14 @@ jobs:
     pool:
       name: 'Ryzen-Neto-Local'  # Agente local que vai rodar o pipeline
     steps:
-      - script: |
-          "C:\Program Files\Docker\Docker\resources\bin\docker.exe" version
-          echo %DOCKER_PASSWORD% | "C:\Program Files\Docker\Docker\resources\bin\docker.exe" login -u %DOCKER_USERNAME% --password-stdin
-          if %ERRORLEVEL% NEQ 0 exit /b 1
-          "C:\Program Files\Docker\Docker\resources\bin\docker.exe" buildx build --platform linux/amd64 -f $(Build.SourcesDirectory)\Dockerfile -t jpneto90/unyleya_projeto_devops:latest --push .
+      - task: PowerShell@2
+        inputs:
+          targetType: inline
+          script: |
+            & "C:\Program Files\Docker\Docker\resources\bin\docker.exe" version
+            Write-Output $env:DOCKER_PASSWORD | & "C:\Program Files\Docker\Docker\resources\bin\docker.exe" login -u $env:DOCKER_USERNAME --password-stdin
+            if ($LASTEXITCODE -ne 0) { exit 1 }
+            & "C:\Program Files\Docker\Docker\resources\bin\docker.exe" buildx build --platform linux/amd64 -f $(Build.SourcesDirectory)\Dockerfile -t jpneto90/unyleya_projeto_devops:latest --push
         displayName: 'Build and Push Docker Image'
         env:
           DOCKER_USERNAME: $(DOCKER_USERNAME)
