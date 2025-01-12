@@ -7,12 +7,15 @@ jobs:
   - job: build
     displayName: 'Build Docker Image on WSL'
     pool:
-      name: 'Ryzen-Neto-Local'  # VM que vai rodar o pipeline
+      name: 'Ryzen-Neto-Local'  # VM local que vai rodar o pipeline
     steps:
       - script: |
-          # Executar os comandos Docker no WSL
+          # Certificar-se de que estamos no diretório correto
+          cd $(Build.SourcesDirectory)
+
+          # Executar comandos Docker no WSL
           wsl -- docker login -u $DOCKER_USERNAME --password-stdin
-          wsl -- docker build -f **/Dockerfile -t jpneto90/unyleya_projeto_devops:latest .
+          wsl -- docker build -f $(Build.SourcesDirectory)/Dockerfile -t jpneto90/unyleya_projeto_devops:latest .
           wsl -- docker push jpneto90/unyleya_projeto_devops:latest
         displayName: 'Build and Push Docker Image'
         env:
