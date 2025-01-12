@@ -14,8 +14,7 @@ jobs:
           targetType: inline
           script: |
             & "C:\Program Files\Docker\Docker\resources\bin\docker.exe" version
-            Write-Output "DOCKER_PASSWORD: ${env:DOCKER_PASSWORD}"  # Exibe o valor da variável para diagnóstico
-            Write-Output ${env:DOCKER_PASSWORD} | & "C:\Program Files\Docker\Docker\resources\bin\docker.exe" login -u ${env:DOCKER_USERNAME} --password-stdin
+            & "C:\Program Files\Docker\Docker\resources\bin\docker.exe" login -u ${env:DOCKER_USERNAME} -p ${env:DOCKER_PASSWORD}
             if ($LASTEXITCODE -ne 0) { exit 1 }
             & "C:\Program Files\Docker\Docker\resources\bin\docker.exe" buildx build --platform linux/amd64 -f $(Build.SourcesDirectory)\Dockerfile -t jpneto90/unyleya_projeto_devops:latest --push
         displayName: 'Build and Push Docker Image'
