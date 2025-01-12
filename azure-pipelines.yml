@@ -13,10 +13,11 @@ jobs:
           # Certificar-se de que estamos no diretório correto
           cd $(Build.SourcesDirectory)
 
-          # Executar comandos Docker no WSL
-          wsl -- docker login -u $DOCKER_USERNAME --password-stdin
-          wsl -- docker build -f $(Build.SourcesDirectory)/Dockerfile -t jpneto90/unyleya_projeto_devops:latest .
-          wsl -- docker push jpneto90/unyleya_projeto_devops:latest
+          # Login no Docker
+          echo $DOCKER_PASSWORD | wsl -- docker login -u $DOCKER_USERNAME --password-stdin
+
+          # Build e Push da imagem usando buildx
+          wsl -- docker buildx build --platform linux/amd64 -f $(Build.SourcesDirectory)/Dockerfile -t jpneto90/unyleya_projeto_devops:latest --push .
         displayName: 'Build and Push Docker Image'
         env:
           DOCKER_USERNAME: $(DOCKER_USERNAME)
