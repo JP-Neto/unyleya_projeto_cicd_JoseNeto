@@ -56,6 +56,6 @@ docker pull <seu-usuario>/<nome-do-repositorio>:<tag>
 Substitua <seu-usuario> e <nome-do-repositorio> pelos seus dados do Docker Hub.
 ```
 ## Resultados Esperados
-Após a execução da pipeline, a imagem Docker será gerada e armazenada no Docker Hub. Você poderá acessar a imagem e usá-la conforme necessário em qualquer ambiente de desenvolvimento ou produção.
+Após a execução da pipeline, a imagem Docker será gerada e armazenada no Docker Hub. Você poderá acessar a imagem e usá-la conforme necessário em qualquer ambiente de desenvolvimento ou produção..
 
 
