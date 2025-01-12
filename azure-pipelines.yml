@@ -2,6 +2,7 @@ trigger:
   branches:
     include:
       - master  # branch que irei configurar como trigger na pipeline
+
 jobs:
   - job: build
     displayName: 'Build Docker Image on WSL'
@@ -9,14 +10,10 @@ jobs:
       name: 'Ryzen-Neto-Local'  # VM que vai rodar o pipeline
     steps:
       - script: |
-          # Login no Docker Hub
-          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-          
-          # Construir a imagem Docker diretamente no WSL
-          docker build -f **/Dockerfile -t jpneto90/unyleya_projeto_devops:latest .
-          
-          # Empurrar a imagem para o Docker Hub
-          docker push jpneto90/unyleya_projeto_devops:latest
+          # Executar os comandos Docker no WSL
+          wsl -- docker login -u $DOCKER_USERNAME --password-stdin
+          wsl -- docker build -f **/Dockerfile -t jpneto90/unyleya_projeto_devops:latest .
+          wsl -- docker push jpneto90/unyleya_projeto_devops:latest
         displayName: 'Build and Push Docker Image'
         env:
           DOCKER_USERNAME: $(DOCKER_USERNAME)
