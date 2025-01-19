@@ -1,35 +1,37 @@
 trigger:
   branches:
     include:
-      - master  # Branch que será usada como trigger na pipeline
+      - master  # Branch que será usada como trigger
 
-jobs:
-  - job: deploy
-    displayName: 'Deploy to Azure App Service'
-    pool:
-      name: 'Ryzen-Neto-Local'  # Nome do agente local que será usado
-    steps:
-      - task: AzureCLI@2
-        displayName: 'Deploy to Azure'
-        inputs:
-          azureSubscription: 'JP-Neto'  # Nome da sua Service Connection
-          scriptType: bash
-          scriptLocation: inlineScript
-          inlineScript: |
-            # Configurar o App Service já provisionado com a imagem Docker
-            az webapp config container set --name appweb-devops \
-              --resource-group rg-devops-unyleya \
-              --docker-custom-image-name jpneto90/unyleya_projeto_devops:latest \
-              --docker-registry-server-url https://index.docker.io/v1/ \
-              --docker-registry-server-user ${DOCKER_USERNAME} \
-              --docker-registry-server-password ${DOCKER_PASSWORD}
+stages:
+  - stage: Deploy
+    displayName: 'Continuous Deployment'
+    jobs:
+      - job: deploy
+        displayName: 'Deploy to Azure App Service'
+        pool:
+          name: 'Ryzen-Neto-Local'
+        steps:
+          - task: AzureCLI@2
+            displayName: 'Deploy Docker Image to Azure App Service'
+            inputs:
+              azureSubscription: 'JP-Neto'
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                az webapp config container set --name appweb-devops \
+                  --resource-group rg-devops-unyleya \
+                  --docker-custom-image-name jpneto90/unyleya_projeto_devops:latest \
+                  --docker-registry-server-url https://index.docker.io/v1/ \
+                  --docker-registry-server-user ${DOCKER_USERNAME} \
+                  --docker-registry-server-password ${DOCKER_PASSWORD}
 
-      - task: AzureCLI@2
-        displayName: 'Restart App Service'
-        inputs:
-          azureSubscription: 'JP-Neto'
-          scriptType: bash
-          scriptLocation: inlineScript
-          inlineScript: |
-            az webapp restart --name appweb-devops \
-              --resource-group rg-devops-unyleya
+          - task: AzureCLI@2
+            displayName: 'Restart App Service'
+            inputs:
+              azureSubscription: 'JP-Neto'
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                az webapp restart --name appweb-devops \
+                  --resource-group rg-devops-unyleya
