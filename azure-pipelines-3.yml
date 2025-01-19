@@ -1,0 +1,40 @@
+trigger:
+  branches:
+    include:
+      - master  # Branch que será usada como trigger na pipeline
+
+jobs:
+  - job: deploy
+    displayName: 'Deploy to Azure App Service'
+    pool:
+      name: 'Ryzen-Neto-Local'
+    steps:
+      - task: AzureCLI@2
+        displayName: 'Login to Azure'
+        inputs:
+          azureSubscription: 'SuaServiceConnectionNoAzureDevOps'
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: |
+            # Criar o App Service caso ainda não exista
+            az webapp create --name Appweb-devops \
+              --resource-group rg-devops-unyleya \
+              --plan NomeDoAppServicePlan \
+              --deployment-container-image-name jpneto90/unyleya_projeto_devops:latest
+
+            # Configurar as variáveis de ambiente, se necessário
+            az webapp config appsettings set --name Appweb-devops \
+              --resource-group rg-devops-unyleya \
+              --settings "DOCKER_REGISTRY_SERVER_URL=https://index.docker.io/v1/" \
+              "DOCKER_REGISTRY_SERVER_USERNAME=${env:DOCKER_USERNAME}" \
+              "DOCKER_REGISTRY_SERVER_PASSWORD=${env:DOCKER_PASSWORD}"
+
+      - task: AzureCLI@2
+        displayName: 'Restart App Service'
+        inputs:
+          azureSubscription: 'SuaServiceConnectionNoAzureDevOps'
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: |
+            az webapp restart --name Appweb-devops \
+              --resource-group rg-devops-unyleya
