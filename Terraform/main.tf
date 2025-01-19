@@ -5,25 +5,23 @@ provider "azurerm" {
 # Resource Group
 resource "azurerm_resource_group" "rg_devops" {
   name     = "rg-devops-unyleya"
-  location = "eastus" # Escolha a região que preferir
+  location = "eastus" 
 }
 
-# App Service Plan
+# App Service Plan (Windows)
 resource "azurerm_app_service_plan" "app_service_plan" {
   name                = "appserviceplan-devops"
   location            = azurerm_resource_group.rg_devops.location
   resource_group_name = azurerm_resource_group.rg_devops.name
-  kind                = "Linux"
-  reserved            = true
-
+  kind                = "Windows" 
   sku {
-    tier = "Basic"
-    size = "B1"
+    tier = "Standard"
+    size = "S1"
   }
 }
 
-# App Service
-resource "azurerm_linux_web_app" "app_service" {
+# App Service (Windows com Docker)
+resource "azurerm_windows_web_app" "app_service" {
   name                = "appweb-devops"
   location            = azurerm_resource_group.rg_devops.location
   resource_group_name = azurerm_resource_group.rg_devops.name
@@ -31,17 +29,17 @@ resource "azurerm_linux_web_app" "app_service" {
 
   site_config {
     app_command_line = ""
-    linux_fx_version = "DOCKER|jpneto90/unyleya_projeto_devops:latest"
+    windows_fx_version = "DOCKER|<DOCKER_USERNAME>/<IMAGEM>:<TAG>" # Atualize com seu Docker Hub
   }
 
   app_settings = {
-    DOCKER_REGISTRY_SERVER_URL      = "https://index.docker.io/v1/"
-    DOCKER_REGISTRY_SERVER_USERNAME = var.docker_username
-    DOCKER_REGISTRY_SERVER_PASSWORD = var.docker_password
+    WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
+    DOCKER_REGISTRY_SERVER_URL          = "https://index.docker.io/v1/"
+    DOCKER_REGISTRY_SERVER_USERNAME     = var.docker_username
+    DOCKER_REGISTRY_SERVER_PASSWORD     = var.docker_password
   }
 }
 
-# Output do App Service
 output "app_service_url" {
-  value = azurerm_linux_web_app.app_service.default_site_hostname
+  value = azurerm_windows_web_app.app_service.default_site_hostname
 }
